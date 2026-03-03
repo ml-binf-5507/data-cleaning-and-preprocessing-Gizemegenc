@@ -4,37 +4,34 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 print("Libraries loaded!")
+import os
+import sys
 
-def load_data(file_path):
-    """
-    Load the dataset from a CSV file.
-    
-    Parameters:
-    file_path (str): The path to the CSV file containing the dataset.
-    
-    Returns:
-    pd.DataFrame: The loaded dataset as a pandas DataFrame.
-    """
-    try:
-        data = pd.read_csv(file_path)
-        print(f"Data loaded successfully from {file_path}")
-        return data
-    except Exception as e:
-        print(f"Error loading data: {e}")
-        return None
+# Set repo root
+repo_root = r"C:\Users\gizem\Desktop\Humber College\Semester 2\Machine Learning AI Bioinforma\BINF-5507-Winter2026\BINF-5507-Winter2026\Assignment_1_GizemEsraGenc"
+os.chdir(repo_root)
+sys.path.append(os.path.join(repo_root, "src"))
 
-# Example usage:
-file_path = r"C:\Users\gizem\Desktop\Humber College\Semester 2\Machine Learning AI Bioinforma\BINF-5507-Winter2026\BINF-5507-Winter2026\Assignment_1_GizemEsraGenc\heart_disease_dataset.csv"
-data = load_data(file_path)
+# Import your functions
+from preprocess import detect_feature_types, encode_categorical, scale_numeric
+print("✅ Functions imported successfully!")
 
-df = pd.read_csv('heart_disease_dataset.csv')
 
-print(f"Dataset shape: {df.shape}")
-print(f"\nFirst few rows:")
-print(df.head())
+import pandas as pd
 
-print(f"\nData types:")
-print(df.dtypes)
+# Load your heart disease dataset
+df = pd.read_csv("heart_disease_dataset.csv")
 
-print(f"\nMissing values:")
-print(df.isna().sum())
+# 1️⃣ Detect feature types
+cat_cols, num_cols = detect_feature_types(df)
+print("Categorical columns:", cat_cols)
+print("Numeric columns:", num_cols)
+
+# 2️⃣ Encode categorical features
+df_encoded, new_cols = encode_categorical(df, cat_cols)
+print("New one-hot encoded columns added:", new_cols)
+
+# 3️⃣ Scale numeric features
+df_scaled = scale_numeric(df_encoded, num_cols)
+print("Preview of scaled dataframe:")
+print(df_scaled.head())
